@@ -1,0 +1,22 @@
+package appbase
+
+import (
+	"github.com/cheekybits/genny/generic"
+)
+
+type KingpinType generic.Type
+type ActualType generic.Type
+
+func (setting *Setting) KingpinType(defaultValue ActualType) (target *ActualType) {
+	setting.application.viper.SetDefault(setting.viperPath, defaultValue)
+
+	var realFinalValue ActualType
+	target = &realFinalValue
+
+	setting.kingpinFlag.Default(fmt.Sprint(defaultValue)).KingpinType()
+	setting.readIn = func() (err error) {
+		err = setting.application.viper.UnmarshalKey(setting.viperPath, target)
+		return
+	}
+	return
+}
